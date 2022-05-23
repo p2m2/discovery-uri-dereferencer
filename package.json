@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
-    "@p2m2/discovery": "^0.4.0",
     "roboto-fontface": "*",
     "vue": "^3.2.25",
     "vuetify": "^3.0.0-beta.0",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
+    "@p2m2/discovery": "^0.4.1",
     "@vitejs/plugin-vue": "^2.3.3",
     "vite": "^2.9.9",
     "vite-plugin-vuetify": "^1.0.0-alpha.0",
