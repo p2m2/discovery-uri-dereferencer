@@ -137,13 +137,33 @@ export class DiscoveryService {
     );
   }
 
-  async toString() : String {
+  async toString() : Promise<string> {
     const service = this;
     const d = await service.loadDiscovery();
     const SWDiscoveryConfiguration = d.SWDiscoveryConfiguration;
     const SWDiscovery = d.SWDiscovery;
-    const config = SWDiscoveryConfiguration.init().sparqlEndpoint("some");
-    return SWDiscovery(config).toString()
+    const URI = d.URI;
+    const config = SWDiscoveryConfiguration.init().sparqlEndpoint("https://peakforest.semantic-metabolomics.fr/sparql");
+    console.log("-- ok --")
+    return new Promise((resolve, reject) => {
+      SWDiscovery(config)
+       .prefix("owl","http://www.w3.org/2002/07/owl#")
+       .something("h")
+       .isA(URI("owl:Class"))
+       .console()
+       .select("h")
+       .commit().raw()
+        .then((args: Array<any>) => {
+            console.log("RES =======================")
+            console.log(args)
+            resolve(JSON.stringify(args))
+        })
+        .catch((error: any) => {
+          console.log("ERR =======================")
+          console.log(error)
+          reject(error);
+        });
+        });
   };
 
   /**
