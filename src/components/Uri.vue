@@ -1,18 +1,19 @@
-<script setup>
-import { SWDiscoveryConfiguration, SWDiscovery, URI, SWTransaction} from '@p2m2/discovery'
+<script lang="ts" setup>
+
+import { DiscoveryService } from './discovery.service'
+
+
 console.log('hello script setup')
 const msg = "Something"
-const config = SWDiscoveryConfiguration
-                 .init()
-                 .sparqlEndpoint("https://forum.semantic-metabolomics.fr/sparql/")
-                 .setPageSize(5)
-                 .setSizeBatchProcessing(10)
-                 .setLogLevel("debug")
-                 .setCache(false);
+let some : string = "" 
 
-const disco = SWDiscovery(config).something("h1").select("h1").commit().raw();
+new DiscoveryService().toString()
+.then(
+  s => { some = s ; console.log(some)}
+).catch( err => some = err)
+
 </script>
 
 <template>
-  <div>{{ disco }}</div>
+  <div>{{ some }}</div>
 </template>
