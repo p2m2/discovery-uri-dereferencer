@@ -14,6 +14,7 @@ interface Discovery {
   URI: any;
   Literal: any;
   PropertyPath: any;
+  QueryVariable: any;
 }
 
 export class EventDiscoveryService {
@@ -47,6 +48,7 @@ export class DiscoveryService {
       URI: (window as any).URI,
       Literal: (window as any).Literal,
       PropertyPath: (window as any).PropertyPath,
+      QueryVariable: (window as any).QueryVariable,
     };
   }
 
@@ -137,26 +139,38 @@ export class DiscoveryService {
     );
   }
 
-  async toString() : Promise<string> {
+  async toString(uri : String) : Promise<Map<string, string>> {
     const service = this;
     const d = await service.loadDiscovery();
     const SWDiscoveryConfiguration = d.SWDiscoveryConfiguration;
     const SWDiscovery = d.SWDiscovery;
+    const QueryVariable = d.QueryVariable;
     const URI = d.URI;
-    const config = SWDiscoveryConfiguration.init().sparqlEndpoint("https://peakforest.semantic-metabolomics.fr/sparql");
+    const config = SWDiscoveryConfiguration.init().sparqlEndpoint("https://forum.semantic-metabolomics.fr/sparql/");
     console.log("-- ok --")
+
     return new Promise((resolve, reject) => {
       SWDiscovery(config)
-       .prefix("owl","http://www.w3.org/2002/07/owl#")
-       .something("h")
-       .isA(URI("owl:Class"))
-       .console()
-       .select("h")
+       .prefix("rdfs","http://www.w3.org/2000/01/rdf-schema#")
+       .something("uri")
+       .set(URI(uri))
+       .isSubjectOf(QueryVariable("relation"),"datatype")
+       .filter.isLiteral
+       .root()
+       .something("relation")
+       .isSubjectOf("rdfs:label","label")
+      // .console()
+       .select("relation","datatype")
        .commit().raw()
-        .then((args: Array<any>) => {
+        .then((sparqlResponse: Array<object>) => {
             console.log("RES =======================")
-            console.log(args)
-            resolve(JSON.stringify(args))
+            let mapSolution = new Map<string,string>() ;
+            for ( let solution of sparqlResponse["results"]["bindings"]) {
+              console.log(solution["relation"].value)
+              console.log(solution["datatype"].value)
+              mapSolution.set(solution["relation"].value,solution["datatype"].value)
+            }
+            resolve(mapSolution)
         })
         .catch((error: any) => {
           console.log("ERR =======================")

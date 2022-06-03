@@ -4,7 +4,7 @@
       MetaboHUB - Resource Description
     </v-toolbar> 
       <v-main>
-        <Uri/>
+        <Uri uri="http://rdf.ncbi.nlm.nih.gov/pubchem/reference/PMID34198149"/>
       </v-main>
   </v-app>
 </template>
